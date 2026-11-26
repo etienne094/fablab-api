@@ -37,7 +37,7 @@ public class Pret {
     }
 
     public static Pret creer(String adherent, String materiel, LocalDate debut, int dureeJours) {
-        if (dureeJours < 1 || dureeJours > DUREE_MAX_JOURS + 1) {
+        if (dureeJours < 1 || dureeJours > DUREE_MAX_JOURS) {
             throw new DureeInvalide(dureeJours);
         }
         return new Pret(adherent, materiel, debut, debut.plusDays(dureeJours));
