@@ -13,7 +13,7 @@
 
   <groupId>fr.fablab</groupId>
   <artifactId>fablab-api</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <name>FabLab - API de prêt de matériel</name>
 
   <properties>

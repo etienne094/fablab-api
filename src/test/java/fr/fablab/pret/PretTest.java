@@ -34,6 +34,12 @@ class PretTest {
     }
 
     @Test
+    void un_pret_de_15_jours_est_refuse() {
+        assertThatThrownBy(() -> Pret.creer("ADH-042", "IMP-3D-01", LUNDI, 15))
+                .isInstanceOf(DureeInvalide.class);
+    }
+
+    @Test
     void un_pret_non_rendu_apres_la_date_prevue_est_en_retard() {
         Pret pret = Pret.creer("ADH-042", "IMP-3D-01", LUNDI, 7);
 
