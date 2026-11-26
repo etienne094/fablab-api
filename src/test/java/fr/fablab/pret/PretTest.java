@@ -72,4 +72,28 @@ class PretTest {
 
         assertThat(pret.penalite(LUNDI.plusDays(10))).isEqualTo(Montant.euros(1.50));
     }
+
+    @Test
+    void un_pret_se_prolonge_de_7_jours() {
+        Pret pret = Pret.creer("ADH-042", "IMP-3D-01", LUNDI, 14);
+
+        pret.prolonger(7);
+
+        assertThat(pret.getRetourPrevu()).isEqualTo(LUNDI.plusDays(21));
+    }
+
+    @Test
+    void un_pret_ne_se_prolonge_qu_une_fois() {
+        Pret pret = Pret.creer("ADH-042", "IMP-3D-01", LUNDI, 7);
+        pret.prolonger(7);
+
+        assertThatThrownBy(() -> pret.prolonger(7)).isInstanceOf(PretDejaProlonge.class);
+    }
+
+    @Test
+    void une_prolongation_de_plus_de_7_jours_est_refusee() {
+        Pret pret = Pret.creer("ADH-042", "IMP-3D-01", LUNDI, 7);
+
+        assertThatThrownBy(() -> pret.prolonger(8)).isInstanceOf(DureeInvalide.class);
+    }
 }

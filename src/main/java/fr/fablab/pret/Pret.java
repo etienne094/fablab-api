@@ -14,6 +14,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 public class Pret {
 
     public static final int DUREE_MAX_JOURS = 14;
+    public static final int PROLONGATION_MAX_JOURS = 7;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +24,7 @@ public class Pret {
     private LocalDate debut;
     private LocalDate retourPrevu;
     private LocalDate dateRetour;
+    private boolean dejaProlonge;
 
     protected Pret() {
     }
@@ -59,6 +61,18 @@ public class Pret {
     public Montant penalite(LocalDate retour) {
         long jours = DAYS.between(retourPrevu, retour);
         return Montant.euros(0.50).fois(Math.max(0, jours));
+    }
+
+    public Pret prolonger(int jours) {
+        if (dejaProlonge) throw new PretDejaProlonge(id);
+        if (jours < 1 || jours > PROLONGATION_MAX_JOURS) throw new DureeInvalide(jours);
+        return avecRetourPrevu(retourPrevu.plusDays(jours));
+    }
+
+    private Pret avecRetourPrevu(LocalDate date) {
+        this.retourPrevu = date;
+        this.dejaProlonge = true;
+        return this;
     }
 
     public Long getId() {

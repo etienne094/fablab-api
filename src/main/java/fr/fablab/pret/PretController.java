@@ -29,6 +29,11 @@ public class PretController {
         return ReponsePret.de(service.emprunter(demande.adherent(), demande.materiel(), demande.duree()));
     }
 
+    @PutMapping("/{id}/prolongation")
+    public ReponsePret prolonger(@PathVariable long id) {
+        return ReponsePret.de(service.prolonger(id));
+    }
+
     @PutMapping("/{id}/retour")
     public ReponsePret rendre(@PathVariable long id) {
         return ReponsePret.de(service.rendre(id));
