@@ -42,10 +42,58 @@ class PretTest {
     }
 
     @Test
+    void un_pret_rendu_n_est_plus_en_cours_ni_en_retard() {
+        Pret pret = Pret.creer("ADH-042", "IMP-3D-01", LUNDI, 7);
+
+        pret.rendre(LUNDI.plusDays(10));
+
+        assertThat(pret.estEnCours()).isFalse();
+        assertThat(pret.estEnRetard(LUNDI.plusDays(20))).isFalse();
+    }
+
+    @Test
     void un_pret_ne_se_rend_pas_deux_fois() {
         Pret pret = Pret.creer("ADH-042", "IMP-3D-01", LUNDI, 7);
         pret.rendre(LUNDI.plusDays(3));
 
         assertThatThrownBy(() -> pret.rendre(LUNDI.plusDays(4))).isInstanceOf(PretDejaRendu.class);
+    }
+
+    @Test
+    void pas_de_penalite_pour_un_retour_a_l_heure() {
+        Pret pret = Pret.creer("ADH-042", "IMP-3D-01", LUNDI, 7);
+
+        assertThat(pret.penalite(LUNDI.plusDays(7))).isEqualTo(Montant.euros(0));
+    }
+
+    @Test
+    void cinquante_centimes_par_jour_de_retard() {
+        Pret pret = Pret.creer("ADH-042", "IMP-3D-01", LUNDI, 7);
+
+        assertThat(pret.penalite(LUNDI.plusDays(10))).isEqualTo(Montant.euros(1.50));
+    }
+
+    @Test
+    void un_pret_se_prolonge_de_7_jours() {
+        Pret pret = Pret.creer("ADH-042", "IMP-3D-01", LUNDI, 14);
+
+        pret.prolonger(7);
+
+        assertThat(pret.getRetourPrevu()).isEqualTo(LUNDI.plusDays(21));
+    }
+
+    @Test
+    void un_pret_ne_se_prolonge_qu_une_fois() {
+        Pret pret = Pret.creer("ADH-042", "IMP-3D-01", LUNDI, 7);
+        pret.prolonger(7);
+
+        assertThatThrownBy(() -> pret.prolonger(7)).isInstanceOf(PretDejaProlonge.class);
+    }
+
+    @Test
+    void une_prolongation_de_plus_de_7_jours_est_refusee() {
+        Pret pret = Pret.creer("ADH-042", "IMP-3D-01", LUNDI, 7);
+
+        assertThatThrownBy(() -> pret.prolonger(8)).isInstanceOf(DureeInvalide.class);
     }
 }

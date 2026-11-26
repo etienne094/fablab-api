@@ -36,6 +36,11 @@ public class PretService {
         return prets.save(Pret.creer(adherent, materiel, LocalDate.now(horloge), dureeJours));
     }
 
+    public Pret prolonger(long id) {
+        Pret pret = prets.findById(id).orElseThrow(() -> new PretInconnu(id));
+        return prets.save(pret.prolonger(Pret.PROLONGATION_MAX_JOURS));
+    }
+
     public Pret rendre(long id) {
         Pret pret = prets.findById(id).orElseThrow(() -> new PretInconnu(id));
         pret.rendre(LocalDate.now(horloge));
