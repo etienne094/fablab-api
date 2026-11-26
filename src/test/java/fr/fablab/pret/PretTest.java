@@ -58,4 +58,18 @@ class PretTest {
 
         assertThatThrownBy(() -> pret.rendre(LUNDI.plusDays(4))).isInstanceOf(PretDejaRendu.class);
     }
+
+    @Test
+    void pas_de_penalite_pour_un_retour_a_l_heure() {
+        Pret pret = Pret.creer("ADH-042", "IMP-3D-01", LUNDI, 7);
+
+        assertThat(pret.penalite(LUNDI.plusDays(7))).isEqualTo(Montant.euros(0));
+    }
+
+    @Test
+    void cinquante_centimes_par_jour_de_retard() {
+        Pret pret = Pret.creer("ADH-042", "IMP-3D-01", LUNDI, 7);
+
+        assertThat(pret.penalite(LUNDI.plusDays(10))).isEqualTo(Montant.euros(1.50));
+    }
 }

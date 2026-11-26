@@ -8,6 +8,8 @@ import jakarta.persistence.Id;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 @Entity
 public class Pret {
 
@@ -52,6 +54,11 @@ public class Pret {
 
     public boolean estEnRetard(LocalDate aujourdhui) {
         return estEnCours() && retourPrevu.isBefore(aujourdhui);
+    }
+
+    public Montant penalite(LocalDate retour) {
+        long jours = DAYS.between(retourPrevu, retour);
+        return Montant.euros(0.50).fois(Math.max(0, jours));
     }
 
     public Long getId() {
